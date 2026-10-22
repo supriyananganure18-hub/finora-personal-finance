@@ -1,0 +1,17 @@
+/* Savings goal CRUD and progress rendering */
+(() => {
+  const S=()=>window.FinoraStore.state, money=n=>window.Finora.formatMoney(n),esc=s=>window.FinoraTransactions.esc(s);
+  const render=()=>{
+    const goals=S().goals,totalTarget=goals.reduce((s,g)=>s+Number(g.target),0),saved=goals.reduce((s,g)=>s+Number(g.saved),0),complete=goals.filter(g=>g.saved>=g.target).length;
+    const strip=document.getElementById("goalSummary");
+    if(strip)strip.innerHTML=`<div class="strip-stat"><span>Total goal targets</span><strong>${money(totalTarget)}</strong></div><div class="strip-stat"><span>Total saved toward goals</span><strong>${money(saved)}</strong></div><div class="strip-stat"><span>Goals achieved</span><strong>${complete} / ${goals.length}</strong></div>`;
+    const cards=document.getElementById("goalCards");
+    if(cards)cards.innerHTML=goals.map(g=>{const pct=Math.min(100,Number(g.saved)/Number(g.target)*100),done=g.saved>=g.target;return `<article class="panel goal-card"><div class="goal-card-head"><span class="goal-icon"><i class="icon icon-${g.name.toLowerCase().includes("travel")||g.name.toLowerCase().includes("getaway")?"plane":g.name.toLowerCase().includes("laptop")?"laptop":g.name.toLowerCase().includes("emergency")?"shield-check":"target"}"></i></span><div class="budget-card-title"><h2>${esc(g.name)}</h2><p>${esc(g.description||"A goal worth working toward.")}</p></div><div class="card-actions"><button class="action-btn" data-edit-goal="${esc(g.id)}" aria-label="Edit ${esc(g.name)}"><i class="icon icon-pencil"></i></button><button class="action-btn delete" data-delete-goal="${esc(g.id)}" aria-label="Delete ${esc(g.name)}"><i class="icon icon-trash-2"></i></button></div></div><div class="goal-target">${money(g.target)}</div><p class="muted">Target amount</p><div class="goal-progress-line"><span>${money(g.saved)} saved</span><strong>${pct.toFixed(0)}%</strong></div><div class="progress-track"><div class="progress-fill ${done?"":" "}" style="width:${pct}%"></div></div><div class="goal-card-bottom"><span>${done?'<span class="trend">Goal achieved!</span>':`${money(Math.max(0,g.target-g.saved))} to go`}<br>Target ${g.date?new Date(g.date+"T12:00:00").toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}):"date not set"}</span><div class="goal-actions">${!done?`<button class="btn btn-secondary btn-sm" data-contribute-goal="${esc(g.id)}"><i class="icon icon-plus"></i> Add savings</button>`:""}</div></div></article>`;}).join("");
+    document.getElementById("goalsEmpty")?.classList.toggle("hidden",goals.length>0);
+    document.getElementById("goalCards")?.classList.toggle("hidden",goals.length===0);
+    const preview=document.getElementById("goalsPreview");
+    if(preview)preview.innerHTML=goals.slice(0,3).map(g=>{const pct=Math.min(100,g.saved/g.target*100);return `<div class="goal-preview"><span class="goal-icon"><i class="icon icon-target"></i></span><div class="goal-preview-main"><div class="goal-preview-top"><strong>${esc(g.name)}</strong><span>${pct.toFixed(0)}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div><div class="goal-preview-bottom"><span>${money(g.saved)} saved</span><span>${money(g.target)}</span></div></div></div>`;}).join("");
+    document.getElementById("goalsPreviewEmpty")?.classList.toggle("hidden",goals.length>0);
+  };
+  window.FinoraGoals={render};
+})();

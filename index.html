@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101828">
+  <meta name="description" content="Finora — a thoughtful personal finance dashboard that keeps your money organized.">
+  <title>Finora — Personal Finance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@0.468.0/font/lucide.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script defer src="assets/js/storage.js"></script>
+  <script defer src="assets/js/transactions.js"></script>
+  <script defer src="assets/js/budgets.js"></script>
+  <script defer src="assets/js/goals.js"></script>
+  <script defer src="assets/js/reports.js"></script>
+  <script defer src="assets/js/dashboard.js"></script>
+  <script defer src="assets/js/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#" data-page="overview" aria-label="Finora overview">
+        <span class="brand-mark"><i class="icon icon-chart-no-axes-combined"></i></span>
+        <span>finora<span class="brand-period">.</span></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="nav-list">
+        <button class="nav-item active" data-page="overview"><i class="icon icon-layout-dashboard"></i><span>Overview</span></button>
+        <button class="nav-item" data-page="transactions"><i class="icon icon-arrow-left-right"></i><span>Transactions</span></button>
+        <button class="nav-item" data-page="budgets"><i class="icon icon-chart-pie"></i><span>Budgets</span></button>
+        <button class="nav-item" data-page="goals"><i class="icon icon-target"></i><span>Savings goals</span></button>
+        <button class="nav-item" data-page="reports"><i class="icon icon-chart-no-axes-column-increasing"></i><span>Reports</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip">
+          <div class="tip-icon"><i class="icon icon-sparkles"></i></div>
+          <strong>Small steps add up.</strong>
+          <p>Make your money work with intention, one day at a time.</p>
+        </div>
+        <button class="nav-item" data-page="settings"><i class="icon icon-settings-2"></i><span>Settings</span></button>
+        <div class="profile-row">
+          <div class="avatar" id="profileAvatar">A</div>
+          <div class="profile-copy"><strong id="profileName">Alex Morgan</strong><span>Personal account</span></div>
+          <button class="icon-btn theme-toggle" id="themeToggle" aria-label="Toggle light and dark theme" title="Toggle theme"><i class="icon icon-sun-moon"></i></button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="icon-btn mobile-menu" id="mobileMenu" aria-label="Open navigation"><i class="icon icon-menu"></i></button>
+        <div class="breadcrumb"><span>Workspace</span><i class="icon icon-chevron-right"></i><strong id="pageCrumb">Overview</strong></div>
+        <div class="topbar-actions">
+          <span class="local-badge"><span class="status-dot"></span> Local workspace</span>
+          <button class="icon-btn" id="topThemeToggle" aria-label="Switch theme" title="Switch theme"><i class="icon icon-sun-moon"></i></button>
+          <button class="avatar avatar-small" id="topAvatar" aria-label="Profile">A</button>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="page active" id="page-overview">
+          <div class="welcome-row">
+            <div><div class="eyebrow" id="todayLabel">YOUR MONEY, IN FOCUS</div><h1 id="welcomeTitle">Good afternoon, Alex!</h1><p class="muted">Here's your financial overview.</p></div>
+            <button class="btn btn-primary" data-action="add-transaction"><i class="icon icon-plus"></i> Add transaction</button>
+          </div>
+          <div class="demo-banner" id="demoBanner"><i class="icon icon-info"></i><span>You're viewing <strong>sample data</strong> — illustrative transactions, not bank activity.</span><button id="dismissDemo" class="banner-dismiss" aria-label="Dismiss sample data notice"><i class="icon icon-x"></i></button></div>
+          <div class="summary-grid" id="summaryGrid">
+            <article class="summary-card balance-card"><div class="summary-head"><span>Total balance</span><span class="metric-icon mint"><i class="icon icon-wallet"></i></span></div><div class="metric-value" id="totalBalance">₹0</div><div class="metric-foot"><span class="trend neutral" id="balanceTrend">Your money snapshot</span><span class="mini-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div></article>
+            <article class="summary-card"><div class="summary-head"><span>Monthly income</span><span class="metric-icon green"><i class="icon icon-trending-up"></i></span></div><div class="metric-value" id="monthlyIncome">₹0</div><div class="metric-foot"><span class="trend" id="incomeTrend">This month</span><span class="metric-sub">vs. last month</span></div></article>
+            <article class="summary-card"><div class="summary-head"><span>Monthly expenses</span><span class="metric-icon coral"><i class="icon icon-trending-down"></i></span></div><div class="metric-value" id="monthlyExpenses">₹0</div><div class="metric-foot"><span class="trend" id="expenseTrend">This month</span><span class="metric-sub">vs. last month</span></div></article>
+            <article class="summary-card"><div class="summary-head"><span>Savings rate</span><span class="metric-icon violet"><i class="icon icon-piggy-bank"></i></span></div><div class="metric-value" id="savingsRate">0%</div><div class="metric-foot"><span class="trend neutral" id="savingsTrend">Income minus expenses</span><span class="metric-sub">this month</span></div></article>
+          </div>
+
+          <div class="dashboard-grid">
+            <article class="panel chart-panel wide-panel">
+              <div class="panel-heading"><div><h2>Cash flow</h2><p class="muted">Income and expenses over the last 6 months</p></div><span class="chart-legend"><span><i class="legend-dot income-dot"></i>Income</span><span><i class="legend-dot expense-dot"></i>Expenses</span></span></div>
+              <div class="chart-box"><canvas id="cashflowChart" aria-label="Income and expenses over six months" role="img"></canvas></div>
+            </article>
+            <article class="panel chart-panel breakdown-panel">
+              <div class="panel-heading"><div><h2>Spending breakdown</h2><p class="muted">Where your money goes</p></div><button class="text-btn" data-page="reports">Details <i class="icon icon-arrow-up-right"></i></button></div>
+              <div class="donut-wrap"><canvas id="spendingChart" aria-label="Expenses by category" role="img"></canvas><div class="donut-center"><span>This month</span><strong id="donutTotal">₹0</strong></div></div>
+              <div id="categoryLegend" class="category-legend"></div>
+            </article>
+            <article class="panel transactions-panel">
+              <div class="panel-heading"><div><h2>Recent transactions</h2><p class="muted">Your latest money movements</p></div><button class="text-btn" data-page="transactions">View all <i class="icon icon-arrow-right"></i></button></div>
+              <div class="table-wrap"><table><thead><tr><th>Transaction</th><th>Date</th><th>Type</th><th class="align-right">Amount</th></tr></thead><tbody id="recentTransactions"></tbody></table></div>
+              <div class="empty-state hidden" id="recentEmpty"><i class="icon icon-receipt-text"></i><strong>No transactions yet</strong><span>Add your first transaction to get started.</span><button class="btn btn-secondary btn-sm" data-action="add-transaction">Add transaction</button></div>
+            </article>
+            <article class="panel budget-preview-panel">
+              <div class="panel-heading"><div><h2>Monthly budgets</h2><p class="muted">Stay ahead of your spending</p></div><button class="text-btn" data-page="budgets">Manage <i class="icon icon-arrow-right"></i></button></div>
+              <div id="budgetPreview" class="budget-list"></div>
+              <div class="empty-state hidden" id="budgetPreviewEmpty"><i class="icon icon-chart-pie"></i><strong>No budgets yet</strong><span>Set a limit to keep spending on track.</span><button class="btn btn-secondary btn-sm" data-page="budgets">Create budget</button></div>
+            </article>
+            <article class="panel goals-preview-panel">
+              <div class="panel-heading"><div><h2>Savings goals</h2><p class="muted">A little closer every month</p></div><button class="text-btn" data-page="goals">All goals <i class="icon icon-arrow-right"></i></button></div>
+              <div id="goalsPreview" class="goals-preview-list"></div>
+              <div class="empty-state hidden" id="goalsPreviewEmpty"><i class="icon icon-target"></i><strong>No goals yet</strong><span>Give your next milestone a name.</span><button class="btn btn-secondary btn-sm" data-page="goals">Create goal</button></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="page" id="page-transactions">
+          <div class="page-heading"><div><div class="eyebrow">YOUR ACTIVITY</div><h1>Transactions</h1><p class="muted">Every inflow and outflow, all in one place.</p></div><button class="btn btn-primary" data-action="add-transaction"><i class="icon icon-plus"></i> Add transaction</button></div>
+          <article class="panel">
+            <div class="filters-row">
+              <label class="search-field"><i class="icon icon-search"></i><input id="transactionSearch" type="search" placeholder="Search transactions..." aria-label="Search transactions"></label>
+              <select id="typeFilter" aria-label="Filter by type"><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option></select>
+              <select id="categoryFilter" aria-label="Filter by category"><option value="all">All categories</option></select>
+              <select id="dateFilter" aria-label="Filter by date"><option value="all">Any date</option><option value="month">This month</option><option value="last-month">Last month</option><option value="90-days">Last 90 days</option></select>
+              <select id="sortFilter" aria-label="Sort transactions"><option value="date-desc">Newest first</option><option value="date-asc">Oldest first</option><option value="amount-desc">Highest amount</option><option value="amount-asc">Lowest amount</option></select>
+              <button class="btn btn-quiet" id="resetFilters">Reset</button>
+            </div>
+            <div class="table-wrap transaction-table-wrap"><table><thead><tr><th>Transaction</th><th>Category</th><th>Date</th><th>Payment method</th><th>Type</th><th class="align-right">Amount</th><th class="align-right">Actions</th></tr></thead><tbody id="transactionsTable"></tbody></table></div>
+            <div class="empty-state hidden" id="transactionsEmpty"><i class="icon icon-search-x"></i><strong>No matching transactions</strong><span>Try changing your filters or add a transaction.</span><button class="btn btn-secondary btn-sm" data-action="add-transaction">Add transaction</button></div>
+            <div class="table-footer"><span id="transactionCount">0 transactions</span><button class="text-btn" id="exportCsv"><i class="icon icon-download"></i> Export CSV</button></div>
+          </article>
+        </section>
+
+        <section class="page" id="page-budgets">
+          <div class="page-heading"><div><div class="eyebrow">PLAN WITH PURPOSE</div><h1>Budgets</h1><p class="muted">Set thoughtful limits and see how your month is tracking.</p></div><button class="btn btn-primary" data-action="add-budget"><i class="icon icon-plus"></i> Create budget</button></div>
+          <div class="budget-summary-strip" id="budgetSummary"></div>
+          <div class="budget-cards" id="budgetCards"></div>
+          <div class="empty-state panel hidden" id="budgetsEmpty"><i class="icon icon-chart-pie"></i><strong>Your budget starts here</strong><span>Create a monthly limit for a category. Finora will calculate spending from your expense transactions.</span><button class="btn btn-primary" data-action="add-budget"><i class="icon icon-plus"></i> Create your first budget</button></div>
+        </section>
+
+        <section class="page" id="page-goals">
+          <div class="page-heading"><div><div class="eyebrow">SAVE FOR WHAT MATTERS</div><h1>Savings goals</h1><p class="muted">Turn big plans into small, trackable milestones.</p></div><button class="btn btn-primary" data-action="add-goal"><i class="icon icon-plus"></i> New goal</button></div>
+          <div class="goal-summary-strip" id="goalSummary"></div>
+          <div class="goal-cards" id="goalCards"></div>
+          <div class="empty-state panel hidden" id="goalsEmpty"><i class="icon icon-target"></i><strong>Make room for a future you want</strong><span>Set a target, track what you've saved, and celebrate your progress.</span><button class="btn btn-primary" data-action="add-goal"><i class="icon icon-plus"></i> Create a savings goal</button></div>
+          <p class="footnote"><i class="icon icon-info"></i> Goal contributions update the goal tracker only. They do not create expense transactions or move real money.</p>
+        </section>
+
+        <section class="page" id="page-reports">
+          <div class="page-heading"><div><div class="eyebrow">SEE THE BIGGER PICTURE</div><h1>Reports & insights</h1><p class="muted">Understand patterns in your saved transactions.</p></div><div class="heading-actions"><input id="reportMonth" class="month-input" type="month" aria-label="Report month"><button class="btn btn-secondary" id="reportExport"><i class="icon icon-download"></i> Export CSV</button></div></div>
+          <div class="report-metrics" id="reportMetrics"></div>
+          <div class="dashboard-grid reports-grid">
+            <article class="panel chart-panel wide-panel"><div class="panel-heading"><div><h2>Monthly trends</h2><p class="muted">Income, expenses and net cash flow</p></div></div><div class="chart-box report-chart-box"><canvas id="reportTrendChart" aria-label="Monthly financial trends" role="img"></canvas></div></article>
+            <article class="panel"><div class="panel-heading"><div><h2>Spending by category</h2><p class="muted">Selected month</p></div></div><div id="reportCategories" class="report-category-list"></div></article>
+            <article class="panel insight-panel"><div class="panel-heading"><div><h2>Month at a glance</h2><p class="muted">Useful signals from your activity</p></div><i class="icon icon-sparkles panel-heading-icon"></i></div><div id="insightsList" class="insights-list"></div></article>
+          </div>
+        </section>
+
+        <section class="page" id="page-settings">
+          <div class="page-heading"><div><div class="eyebrow">MAKE FINORA YOURS</div><h1>Settings</h1><p class="muted">Control the way your workspace looks and handles data.</p></div></div>
+          <div class="settings-layout">
+            <article class="panel settings-panel"><div class="settings-title"><span class="settings-icon"><i class="icon icon-palette"></i></span><div><h2>Appearance</h2><p class="muted">Choose a comfortable look for your workspace.</p></div></div><div class="setting-row"><div><strong>Theme</strong><span>Switch between dark and light appearance.</span></div><div class="theme-choice" role="group" aria-label="Theme"><button class="theme-option" data-theme-choice="dark"><i class="icon icon-moon"></i> Dark</button><button class="theme-option" data-theme-choice="light"><i class="icon icon-sun"></i> Light</button></div></div>
+            <div class="settings-title section-divider"><span class="settings-icon"><i class="icon icon-wallet"></i></span><div><h2>Display currency</h2><p class="muted">Changes formatting only; it does not convert saved amounts.</p></div></div><div class="setting-row"><div><strong>Currency format</strong><span>All amounts use this display preference.</span></div><select id="currencySetting" aria-label="Display currency"><option value="INR">Indian Rupee (₹ INR)</option><option value="USD">US Dollar ($ USD)</option><option value="EUR">Euro (€ EUR)</option><option value="GBP">British Pound (£ GBP)</option></select></div>
+            <div class="settings-title section-divider"><span class="settings-icon"><i class="icon icon-user-round"></i></span><div><h2>Profile</h2><p class="muted">Personalize your greeting.</p></div></div><form id="profileForm" class="profile-form"><label>Your name<input id="nameSetting" maxlength="60" required placeholder="Your name"></label><button class="btn btn-secondary" type="submit">Save profile</button></form></article>
+            <article class="panel settings-panel"><div class="settings-title"><span class="settings-icon"><i class="icon icon-database"></i></span><div><h2>Your data</h2><p class="muted">Your information stays in this browser's LocalStorage.</p></div></div><div class="data-action-row"><div><strong>Export full backup</strong><span>Download transactions, budgets, goals and settings as JSON.</span></div><button class="btn btn-secondary" id="backupExport"><i class="icon icon-download"></i> Export JSON</button></div><div class="data-action-row"><div><strong>Restore backup</strong><span>Replace current app data with a valid Finora JSON backup.</span></div><label class="btn btn-secondary file-button"><i class="icon icon-upload"></i> Choose JSON<input type="file" id="backupImport" accept=".json,application/json" hidden></label></div><div class="data-action-row"><div><strong>Reset sample data</strong><span>Replace current data with the original demo dataset.</span></div><button class="btn btn-secondary" id="resetDemo"><i class="icon icon-rotate-ccw"></i> Reset demo</button></div><div class="data-action-row danger-row"><div><strong>Clear all application data</strong><span>Remove transactions, budgets, goals and saved preferences.</span></div><button class="btn btn-danger-outline" id="clearData"><i class="icon icon-trash-2"></i> Clear data</button></div><div class="privacy-note"><i class="icon icon-shield-check"></i><div><strong>Private by design, within this browser</strong><p>Finora does not connect to banks or send your financial records to a server. Anyone with access to this browser profile may be able to access local data. Export a backup before clearing browser storage.</p></div></div></article>
+          </div>
+          <p class="footnote">Finora is a personal tracking tool, not financial advice. Sample entries are fictional and are not bank activity.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="overlay hidden" id="modalOverlay" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+      <div class="modal-header"><div><div class="eyebrow" id="modalEyebrow">YOUR MONEY, YOUR CALL</div><h2 id="modalTitle">Add transaction</h2><p id="modalDescription" class="muted">Capture the details so your overview stays current.</p></div><button class="icon-btn" id="modalClose" aria-label="Close dialog"><i class="icon icon-x"></i></button></div>
+      <form id="modalForm"><div id="modalFields" class="modal-fields"></div><div class="form-error hidden" id="formError" role="alert"></div><div class="modal-footer"><button class="btn btn-quiet" type="button" id="modalCancel">Cancel</button><button class="btn btn-primary" type="submit" id="modalSubmit">Save transaction</button></div></form>
+    </section>
+  </div>
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+  <footer class="app-footer"><span>Finora <span class="brand-period">.</span> Thoughtful money management.</span><span>Local-first · No bank connections</span></footer>
+</body>
+</html>
